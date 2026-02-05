@@ -144,6 +144,7 @@ Risk analysis focuses on both traditional and tail-risk metrics, computed from p
 - Maximum daily return: 2.47%  
 - Median daily return: 0.0000  
 These statistics indicate fat-tailed, non-normal return behavior, consistent with real financial markets.
+<img width="1593" height="1182" alt="image" src="https://github.com/user-attachments/assets/a386eeea-8f11-4cd8-a8b4-6239d9232095" />
 
 ## 9. Fragility & Drawdown Intelligence
 ### 9.1 Drawdown Episodes
@@ -259,6 +260,7 @@ The Streamlit dashboard (`dashboard/app.py`) provides an interactive interface i
 - VaR / CVaR and tail-risk visualizations  
 - Asset rankings and performance tables  
 - RSI and return-distribution plots  
+<img width="1365" height="2171" alt="image" src="https://github.com/user-attachments/assets/63ceb6f9-61fc-4aa8-902f-5baca45f5b17" />
 
 ## 12. Tech Stack
 - Python  
