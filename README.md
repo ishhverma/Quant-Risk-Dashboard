@@ -1,5 +1,4 @@
-##Financial Market Quantitative Dashboard  
-Multi-Asset · Regime-Aware · Risk-First Quant Research System
+# FINANCIAL MARKET QUANTITATIVE DASHBOARD – MULTI-ASSET, REGIME-AWARE, RISK-FIRST SYSTEM
 
 ## 1. Project Overview
 This repository implements an end-to-end quantitative market intelligence and portfolio analytics system built on daily historical market data sourced from Yahoo Finance. The project covers the full research cycle: data ingestion, validation, feature engineering, regime detection, signal generation, portfolio backtesting, attribution, risk analysis, and an interactive Streamlit dashboard.
