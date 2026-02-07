@@ -135,16 +135,15 @@ Risk analysis focuses on both traditional and tail-risk metrics, computed from p
 - Conditional VaR (95%): -1.37%  
 
 ### 8.3 Return Distribution
-- Mean: 0.03%  
-- Standard deviation: 0.52%  
-- Skewness: -0.4341  
-- Kurtosis: 6.5979  
+- Mean: 0.02%  
+- Standard deviation: 0.55%  
+- Skewness: -0.0875  
+- Kurtosis: 14.2706  
 - Jarque-Bera p-value: 0.0000  
-- Minimum daily return: -3.86%  
-- Maximum daily return: 2.47%  
-- Median daily return: 0.0000  
+- Minimum daily return: -4.88%  
+- Maximum daily return: 3.40%  
+- Median daily return: 0.0000
 These statistics indicate fat-tailed, non-normal return behavior, consistent with real financial markets.
-
 <img width="2193" height="1336" alt="image" src="https://github.com/user-attachments/assets/6756b1af-a1f1-4a70-9e27-2f6b0038dee8" />
 
 
@@ -158,10 +157,10 @@ These statistics indicate fat-tailed, non-normal return behavior, consistent wit
 
 ### 9.2 Fragility Index
 The `fragility.py` module defines a composite Fragility Index combining higher moments and tail risk:
-- Fragility Index: 1.7909  
-- Fragility_Kurtosis: 6.5979  
-- Fragility_Skewness: 0.4341  
-- Fragility_Max_Drawdown: 11.79%  
+- Fragility Index: 3.6234  
+- Fragility_Kurtosis: 14.2706 
+- Fragility_Skewness: 0.0875 
+- Fragility_Max_Drawdown: 12.17%  
 - Fragility_CVaR: 1.37%  
 
 This is designed to answer:
