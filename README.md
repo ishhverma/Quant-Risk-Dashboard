@@ -255,8 +255,11 @@ Key views:
 ## 13. Tech Stack
 Core stack:
 - Python  
-- `yfinance` for historical market data  
-- `pandas`, `numpy` for data handling and numerical computing  
-- `scipy`, `statsmodels` for statistics and distributional tests  
-- `matplotlib`, `seaborn` for static plots  
-- `streamlit` for the interactive dashboard front-end 
+- yfinance
+- pandas
+- numpy 
+- scipy
+- statsmodels 
+- matplotlib
+- seaborn
+- streamlit
