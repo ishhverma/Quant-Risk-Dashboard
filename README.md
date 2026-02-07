@@ -72,6 +72,7 @@ Sample transition probabilities:
 - Low Volatility → Low Volatility: 94.12%  
 - Recovery → Low Volatility: 85.18%  
 These transition probabilities encode persistence in calm/crisis regimes and mean-reversion toward normal conditions.
+<img width="1193" height="993" alt="image" src="https://github.com/user-attachments/assets/45d4dc15-2a4f-4205-b60e-98ba0fc5ef3f" />
 
 ### 5.2 Role in the System
 The regime layer is central to the architecture and governs:
@@ -155,6 +156,7 @@ Distributional statistics of daily portfolio returns:
 - Maximum daily return: 3.40%  
 - Median daily return: 0.0000  
 These statistics indicate fat-tailed, non-normal return behavior, underscoring the need for explicit tail-risk analysis.
+<img width="1993" height="1182" alt="image" src="https://github.com/user-attachments/assets/aa56685b-2fad-4905-8af7-09836c0e386d" />
 
 ## 9. Fragility & Drawdown Intelligence
 ### 9.1 Drawdown Episodes
@@ -182,6 +184,7 @@ The dashboard also exposes single-asset statistics, which can be used for both s
 - Sharpe ratio: 0.53  
 - Max drawdown: -35.18%  
 - RSI status: Unknown  
+<img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/f3ccb9cc-7e41-4746-9552-3a82be3af838" />
 
 ### MSFT
 - Annual return: 11.61%  
@@ -189,6 +192,7 @@ The dashboard also exposes single-asset statistics, which can be used for both s
 - Sharpe ratio: 0.45  
 - Max drawdown: -40.61%  
 - RSI status: Unknown  
+<img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/0b641b69-0f44-4d84-8a5a-8a6996b8d0b1" />
 
 ### GOOGL
 - Annual return: 23.45%  
@@ -196,6 +200,7 @@ The dashboard also exposes single-asset statistics, which can be used for both s
 - Sharpe ratio: 0.76  
 - Max drawdown: -47.95%  
 - RSI status: Unknown  
+<img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/081137da-7e01-4adc-88d2-591e973c3c41" />
 
 ### TSLA
 - Annual return: 7.18%  
@@ -203,6 +208,7 @@ The dashboard also exposes single-asset statistics, which can be used for both s
 - Sharpe ratio: 0.12  
 - Max drawdown: -79.88%  
 - RSI status: Unknown  
+<img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/5bbcdcb2-9240-4e83-84ec-43ff87ef0f6a" />
 
 ### GC=F (Gold)
 - Current price: 4917.50  
@@ -211,16 +217,8 @@ The dashboard also exposes single-asset statistics, which can be used for both s
 - Annual volatility: 17.24%  
 - Sharpe ratio: 1.16  
 - Max drawdown: -20.88%  
-- RSI status: Normal  
-
-### SI=F (Silver)
-- Current price: 79.11  
-- 20-day change: 2.55%  
-- Annual return: 21.54%  
-- Annual volatility: 36.94%  
-- Sharpe ratio: 0.58  
-- Max drawdown: -40.94%  
-- RSI status: Normal  
+- RSI status: Normal    
+<img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/85b54fb8-6bca-46a8-ba47-4d43c24fac0d" />
 
 ### USDINR=X
 - Current price: 90.15  
@@ -230,15 +228,7 @@ The dashboard also exposes single-asset statistics, which can be used for both s
 - Sharpe ratio: 0.90  
 - Max drawdown: -4.06%  
 - RSI status: Normal  
-
-### EURUSD=X
-- Current price: 1.18  
-- 20-day change: 1.11%  
-- Annual return: -0.26%  
-- Annual volatility: 7.51%  
-- Sharpe ratio: -0.03  
-- Max drawdown: -21.98%  
-- RSI status: Normal  
+<img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/c92e9fc5-c85f-41e2-9903-840c02f14293" />
 
 ### ^GSPC (S&P 500)
 - Annual return: 11.48%  
@@ -246,6 +236,7 @@ The dashboard also exposes single-asset statistics, which can be used for both s
 - Sharpe ratio: 0.68  
 - Max drawdown: -27.11%  
 - RSI status: Unknown  
+<img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/83e29aa4-bfe0-44ee-96cb-3929aee769ad" />
 
 ## 11. Dashboard Overview
 The Streamlit app (e.g., `dashboard/app.py`) exposes an interactive dashboard for exploration and decision support. 
