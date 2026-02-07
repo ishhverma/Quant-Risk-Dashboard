@@ -1,100 +1,108 @@
-# FINANCIAL MARKET QUANTITATIVE DASHBOARD 
-MULTI-ASSET, REGIME-AWARE, RISK-FIRST SYSTEM
+# FINANCIAL MARKET QUANTITATIVE DASHBOARD  
+### Multi-Asset, Regime-Aware, Risk-First System
 
 ## 1. Project Overview
-This repository implements an end-to-end quantitative market intelligence and portfolio analytics system built on daily historical market data sourced from Yahoo Finance. The project covers the full research cycle: data ingestion, validation, feature engineering, regime detection, signal generation, portfolio backtesting, attribution, risk analysis, and an interactive Streamlit dashboard.
-The goal is not just to visualize prices, but to detect market regimes, generate systematic trading signals, evaluate portfolio performance and fragility, and analyze tail risk and drawdowns to produce decision-ready quantitative insights.
-
-> Core philosophy: **Risk** first, regimes matter, and returns must be explained—not assumed.
+This repository implements an end-to-end quantitative market intelligence and portfolio analytics system built on daily historical market data sourced from Yahoo Finance. The system covers the full institutional quant workflow: data ingestion, validation, feature engineering, regime detection, signal generation, portfolio backtesting, attribution, risk analysis, and visualization via an interactive Streamlit dashboard. 
+The goal is not just to visualize prices, but to detect market regimes, generate systematic trading signals, evaluate portfolio performance and fragility, and analyze tail risk and drawdowns to produce decision-ready quantitative insights. The core philosophy is **risk** first, regimes matter, and returns must be explained—not assumed.
 
 ## 2. Objectives
-- Build a research-grade quantitative dashboard aligned with institutional quant and risk workflows.  
-- Move beyond basic indicators toward regime-aware analytics.  
-- Integrate portfolio construction, attribution, and risk intelligence into a single system.  
-- Deliver realistic, defensible metrics (no overfit Sharpe ratios or hidden look-ahead bias).
+- Build a research-grade quantitative dashboard aligned with institutional quant and risk workflows. 
+- Move beyond basic indicators toward regime-aware analytics and state-dependent behavior.  
+- Integrate portfolio construction, attribution, and risk intelligence into a single, reproducible system.  
+- Deliver realistic, defensible metrics (no overfit Sharpe ratios, no hidden look-ahead bias, and clear assumptions).
 
 ## 3. Asset Universe & Data
-
 ### 3.1 Multi-Asset Coverage
-- Equities: AAPL, MSFT, GOOGL, TSLA  
-- Commodities: GC=F (Gold), SI=F (Silver)  
-- FX: USDINR=X, EURUSD=X  
-- Benchmark Index: ^GSPC (S&P 500)  
-In total, data was successfully fetched for 9 tickers, with 0 tickers failing to download.
+Tracked instruments:
+- Equities: `AAPL`, `MSFT`, `GOOGL`, `TSLA`  
+- Commodities: `GC=F` (Gold), `SI=F` (Silver)  
+- FX: `USDINR=X`, `EURUSD=X`  
+- Benchmark Index: `^GSPC` (S&P 500)
+
+Data summary:
+- Data fetched: 9 tickers  
+- Failed downloads: 0 tickers  
 
 ### 3.2 Data Period & Frequency
 - Date range: 2021-02-08 to 2026-02-05  
 - Frequency: Daily (trading days)  
-- Observations: 1,301 trading days in the final aligned dataset  
+- Observations: 1,301 trading days  
 
 ### 3.3 Data Quality & Validation
-Before analytics, the data is passed through a dedicated validation step:
-- Initial missing values (example percentages before cleaning):  
-  - AAPL, MSFT, GOOGL, TSLA, ^GSPC: 3.54%  
-  - GC=F, SI=F: 3.31%  
-- Missing values after cleaning: 0.0% for all tickers  
-- Outlier count: 0 for all tickers  
-- Return spikes detected: 0 for all tickers  
+Before any analytics or backtests, the raw Yahoo Finance data is validated and cleaned to ensure robustness:
+- Initial missing values (before cleaning):  
+  - Equities & benchmark: 3.54%  
+  - Commodities: 3.31%  
+- Missing values after cleaning: 0.0%  
+- Outlier count: 0  
+- Return spikes detected: 0  
 - Last data date: 2026-02-05  
 - Data lag: 0 days  
 - Data fresh: True  
 - Data quality score: 100.0  
-This ensures that every subsequent backtest and risk metric is based on a clean, consistent dataset.
-
+All metrics and backtests are therefore computed on a clean, consistent dataset.
 
 ## 4. Feature Engineering
-From the cleaned OHLCV data, the project constructs a feature matrix used for regime detection and signal generation:
-- Feature matrix shape: (1301, 180)  
-- Indicators per ticker: 19 technical/statistical features (excluding the raw `close` column)
-- 
-Feature categories include:
+From the cleaned OHLCV data, the project builds a rich, multi-asset feature matrix for regime detection and signal generation.
+- Feature matrix shape: `(1301, 180)`  
+- Indicators per ticker: 19 technical/statistical features  
+
+Feature families:
 - Log returns and cumulative returns  
 - Rolling volatility and volatility-of-volatility  
 - Trend and momentum indicators (SMA, EMA, RSI, MACD)  
 - Statistical descriptors (skewness, kurtosis)  
-- Drawdown-related metrics and risk signals  
+- Drawdown-related metrics and risk-sensitive features  
+These features feed both the regime detection engine and signal generation layer.
 
 ## 5. Market Regime Detection
-The system classifies each trading day into one of four regimes:
+### 5.1 Regime Definition & Model
+The system classifies each trading day into one of four market regimes:
 - Low Volatility  
 - High Volatility  
 - Recovery  
-- Crisis  
-
-### 5.1 Regime Model
-- Regime feature input shape: (1301, 4)  
-Sample regime transition probabilities:
+- Crisis
+    
+Regime model inputs:
+- Regime feature input shape: `(1301, 4)`
+   
+Sample transition probabilities:
 - Crisis → Crisis: 91.35%  
 - High Volatility → Crisis: 83.33%  
 - Low Volatility → Low Volatility: 94.12%  
 - Recovery → Low Volatility: 85.18%  
+These transition probabilities encode persistence in calm/crisis regimes and mean-reversion toward normal conditions.
 
 ### 5.2 Role in the System
-The regime layer governs:
-- Signal activation and deactivation  
-- Risk exposure (for example, target volatility and gross exposure constraints)  
-- Portfolio behavior across calm, volatile, and crisis environments  
+The regime layer is central to the architecture and governs:
+- Signal activation and deactivation (e.g., turning signals off in deep crises or high-stress states)  
+- Risk exposure constraints (caps on leverage, position size, or gross exposure by regime)  
+- Portfolio behavior across calm, volatile, and crisis environments, enabling regime-aware allocation and scaling.
 
 ## 6. Signal Generation
-The `signal_engine.py` module generates regime-aware trading signals for each asset:
-- Signals generated for 1,301 trading days  
-- Entry and exit logic is systematic, driven by indicators and regime classification  
-- Signals are consumed by the portfolio construction module to produce positions and trades  
-Signals are evaluated on robustness, drawdown impact, and regime compatibility—not just raw performance.
+Signals are generated via `signal_engine.py`, which consumes both feature-engineered data and regime classifications.
+Key properties:
+- Signals generated for 1,301 trading days.  
+- Entry and exit logic is systematic, rule-based, and regime-aware.  
+- Signals are produced per asset and handed off to the portfolio module as desired position weights and trades.  
+
+Signal evaluation focuses on:
+- Robustness to different regimes.  
+- Drawdown impact and tail behavior.  
+- Regime compatibility and stability, not just raw PnL.
 
 ## 7. Portfolio Construction & Backtesting
 ### 7.1 Backtest Setup
+The portfolio engine takes signals and simulates a daily rebalanced, multi-asset strategy.
 - Initial capital: 100,000 USD  
 - Final portfolio value: 145,121.85 USD  
-- Number of daily returns: 1300  
-- Baseline allocation: Equal-weighted portfolio across selected assets  
-- Rebalancing: Daily rebalancing to target weights  
-This configuration provides a transparent baseline that can be compared to more advanced allocation schemes later.
+- Number of daily returns: 1,300  
+- Baseline allocation: Equal-weighted across the asset universe  
+- Rebalancing: Daily  
 
 ### 7.2 Performance Attribution
-The `attribution.py` module decomposes performance by both asset and regime.
-
-**Total strategy PnL by asset (normalized):**
+The `attribution.py` module decomposes performance by asset and regime to explain where returns come from.
+Total strategy PnL by asset (normalized):
 - AAPL: 0.32  
 - MSFT: 0.62  
 - GOOGL: 0.84  
@@ -105,22 +113,22 @@ The `attribution.py` module decomposes performance by both asset and regime.
 - EURUSD=X: -0.10  
 - ^GSPC: 0.37  
 
-**Regime-specific annualized mean daily returns:**
+Regime-specific annualized mean daily returns:
 - Crisis: -3.56%  
 - High Volatility: 11.59%  
 - Low Volatility: 26.27%  
 
-**Benchmark-relative metrics vs ^GSPC:**
+Benchmark-relative metrics vs `^GSPC`:
 - Alpha: 0.0003  
 - Beta: 0.7964  
 - R-squared: 0.6981  
-- Volatility harvesting alpha: NaN (not computed / not applicable in this version)  
+- Volatility harvesting alpha: NaN (not computed or not meaningful for this configuration)
 
 ## 8. Risk & Tail Analysis
-Risk analysis focuses on both traditional and tail-risk metrics, computed from portfolio returns.
-- Close prices shape: (1301, 9)  
-- Portfolio returns shape: (1300,)  
-- Date range: 2021-02-08 to 2026-02-05  
+The risk engine focuses on both standard risk-adjusted metrics and explicit tail-risk diagnostics.
+Data shapes:
+- Close prices shape: `(1301, 9)`  
+- Portfolio returns shape: `(1300,)`  
 - Average daily return: 0.0300%  
 
 ### 8.1 Risk Metrics
@@ -128,13 +136,16 @@ Risk analysis focuses on both traditional and tail-risk metrics, computed from p
 - Sortino ratio: 0.640  
 - Calmar ratio: 0.641  
 - Maximum drawdown: -11.79%  
+These metrics quantify reward per unit of volatility, downside risk, and drawdown depth.
 
 ### 8.2 Tail Risk
 - Historical VaR (95%): -0.84%  
 - Parametric VaR (95%): -0.83%  
 - Conditional VaR (95%): -1.37%  
+This provides both historical and model-based estimates of left-tail loss, as well as expected loss beyond VaR.
 
 ### 8.3 Return Distribution
+Distributional statistics of daily portfolio returns:
 - Mean: 0.02%  
 - Standard deviation: 0.55%  
 - Skewness: -0.0875  
@@ -142,99 +153,85 @@ Risk analysis focuses on both traditional and tail-risk metrics, computed from p
 - Jarque-Bera p-value: 0.0000  
 - Minimum daily return: -4.88%  
 - Maximum daily return: 3.40%  
-- Median daily return: 0.0000
-These statistics indicate fat-tailed, non-normal return behavior, consistent with real financial markets.
-<img width="2193" height="1336" alt="image" src="https://github.com/user-attachments/assets/6756b1af-a1f1-4a70-9e27-2f6b0038dee8" />
-
-
+- Median daily return: 0.0000  
+These statistics indicate fat-tailed, non-normal return behavior, underscoring the need for explicit tail-risk analysis.
 
 ## 9. Fragility & Drawdown Intelligence
 ### 9.1 Drawdown Episodes
+The system identifies and characterizes drawdown regimes.
 - Number of drawdown periods: 39  
 - Average drawdown duration: 30.2 days  
-- Average maximum drawdown (per episode): -1.45%  
+- Average max drawdown per episode: -1.45%  
 - Worst drawdown: -11.79%  
+This allows you to study how the strategy behaves during stress and how long recovery typically takes.
 
 ### 9.2 Fragility Index
-The `fragility.py` module defines a composite Fragility Index combining higher moments and tail risk:
+The `fragility.py` module aggregates tail and drawdown information into a composite Fragility Index.
 - Fragility Index: 3.6234  
-- Fragility_Kurtosis: 14.2706 
-- Fragility_Skewness: 0.0875 
+- Fragility_Kurtosis: 14.2706  
+- Fragility_Skewness: 0.0875  
 - Fragility_Max_Drawdown: 12.17%  
 - Fragility_CVaR: 1.37%  
-
-This is designed to answer:
-> “How quickly does the portfolio break under stress, and how severe is the damage when it does?”
+Higher values indicate more fragile, tail-sensitive performance, while lower values indicate more robust behavior.
 
 ## 10. Per-Asset Metrics
-The dashboard computes individual asset statistics used in the analytics panels.
-**AAPL**
+The dashboard also exposes single-asset statistics, which can be used for both standalone analysis and portfolio construction.
+### AAPL
 - Annual return: 14.66%  
 - Annual volatility: 27.57%  
 - Sharpe ratio: 0.53  
 - Max drawdown: -35.18%  
-- RSI status: Unknown (latest close not available in this snapshot
-  <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/0bd1be78-066c-4f77-99fe-2f7fa9dee2b9" />
+- RSI status: Unknown  
 
-
-
-**MSFT**
+### MSFT
 - Annual return: 11.61%  
 - Annual volatility: 26.06%  
 - Sharpe ratio: 0.45  
 - Max drawdown: -40.61%  
-- RSI status: Unknown
-- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/92ad9706-0fcd-465a-8028-a72465dd4751" />
+- RSI status: Unknown  
 
-**GOOGL**
+### GOOGL
 - Annual return: 23.45%  
 - Annual volatility: 30.73%  
 - Sharpe ratio: 0.76  
 - Max drawdown: -47.95%  
-- RSI status: Unknown
-- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/2a3e2d8a-7236-4bb9-88bd-8c76b205b2de" />
+- RSI status: Unknown  
 
-
-**TSLA**
+### TSLA
 - Annual return: 7.18%  
 - Annual volatility: 60.15%  
 - Sharpe ratio: 0.12  
 - Max drawdown: -79.88%  
-- RSI status: Unknown
-- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/a036b1d6-c229-4c02-985f-de3988f408c8" />
+- RSI status: Unknown  
 
-**GC=F (Gold)**
+### GC=F (Gold)
 - Current price: 4917.50  
 - 20-day change: 10.52%  
 - Annual return: 20.03%  
 - Annual volatility: 17.24%  
 - Sharpe ratio: 1.16  
 - Max drawdown: -20.88%  
-- RSI status: Normal
-- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/0ed68f58-0ac3-4635-8742-897306d7393b" />
+- RSI status: Normal  
 
-**SI=F (Silver)**
+### SI=F (Silver)
 - Current price: 79.11  
 - 20-day change: 2.55%  
 - Annual return: 21.54%  
 - Annual volatility: 36.94%  
 - Sharpe ratio: 0.58  
 - Max drawdown: -40.94%  
-- RSI status: Normal
-- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/d05a8b6d-6b2d-4cd4-8227-aface06c1e6d" />
+- RSI status: Normal  
 
-
-**USDINR=X**
+### USDINR=X
 - Current price: 90.15  
 - 20-day change: 0.32%  
 - Annual return: 4.11%  
 - Annual volatility: 4.57%  
 - Sharpe ratio: 0.90  
 - Max drawdown: -4.06%  
-- RSI status: Normal
-- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/5955a5c0-62a8-4b91-a426-b995430f4ca0" />
+- RSI status: Normal  
 
-**EURUSD=X**
+### EURUSD=X
 - Current price: 1.18  
 - 20-day change: 1.11%  
 - Annual return: -0.26%  
@@ -242,34 +239,32 @@ The dashboard computes individual asset statistics used in the analytics panels.
 - Sharpe ratio: -0.03  
 - Max drawdown: -21.98%  
 - RSI status: Normal  
-<img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/712576d9-7845-44f7-b30b-d37f0be9d301" />
 
-**^GSPC (S&P 500)**
+### ^GSPC (S&P 500)
 - Annual return: 11.48%  
 - Annual volatility: 16.86%  
 - Sharpe ratio: 0.68  
 - Max drawdown: -27.11%  
 - RSI status: Unknown  
-(Where current price or 20-day change is not available, the dashboard can hide the value or label it as “Not available in current snapshot”.)
-<img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/964c2994-9b85-4557-be1c-78c745f88a13" />
 
 ## 11. Dashboard Overview
-The Streamlit dashboard (`dashboard/app.py`) provides an interactive interface including:
-- Market overview summary  
-- Normalized price comparison across all assets  
-- Risk–return scatter plots  
-- Correlation heatmaps  
-- Market regime timeline and distribution  
-- Rolling Sharpe, volatility, and drawdowns  
-- VaR / CVaR and tail-risk visualizations  
-- Asset rankings and performance tables  
-- RSI and return-distribution plots  
-<img width="1365" height="2171" alt="image" src="https://github.com/user-attachments/assets/63ceb6f9-61fc-4aa8-902f-5baca45f5b17" />
+The Streamlit app (e.g., `dashboard/app.py`) exposes an interactive dashboard for exploration and decision support. [github](https://github.com/shwetanaren/streamlit-financial-dashboard)
+Key views:
+- Market overview summary (headline stats, current regimes, and risk snapshot).  
+- Normalized price comparison across assets to visualize relative performance.  
+- Risk–return scatter plots for cross-sectional risk–reward analysis.  
+- Correlation heatmaps to inspect diversification and clustering.  
+- Market regime timeline and distribution plots to understand state persistence.  
+- Rolling Sharpe, volatility, and drawdown charts for time-varying performance.  
+- VaR / CVaR and tail-risk visualizations.  
+- Asset rankings and performance tables.  
+- RSI and return-distribution plots for microstructure and overbought/oversold context.
 
-## 12. Tech Stack
+## 13. Tech Stack
+Core stack:
 - Python  
-- yfinance  
-- pandas, numpy  
-- scipy, statsmodels  
-- matplotlib, seaborn  
-- streamlit
+- `yfinance` for historical market data  
+- `pandas`, `numpy` for data handling and numerical computing  
+- `scipy`, `statsmodels` for statistics and distributional tests  
+- `matplotlib`, `seaborn` for static plots  
+- `streamlit` for the interactive dashboard front-end 
