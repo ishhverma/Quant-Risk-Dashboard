@@ -144,7 +144,9 @@ Risk analysis focuses on both traditional and tail-risk metrics, computed from p
 - Maximum daily return: 2.47%  
 - Median daily return: 0.0000  
 These statistics indicate fat-tailed, non-normal return behavior, consistent with real financial markets.
-![Uploading image.png…]()
+
+<img width="2193" height="1336" alt="image" src="https://github.com/user-attachments/assets/6756b1af-a1f1-4a70-9e27-2f6b0038dee8" />
+
 
 
 ## 9. Fragility & Drawdown Intelligence
