@@ -15,8 +15,8 @@ The goal is not just to visualize prices, but to detect market regimes, generate
 ### 3.1 Multi-Asset Coverage
 Tracked instruments:
 - Equities: `AAPL`, `MSFT`, `GOOGL`, `TSLA`  
-- Commodities: `GC=F` (Gold), `SI=F` (Silver)  
-- FX: `USDINR=X`, `EURUSD=X`  
+- Commodities: `GC=F` (Gold) 
+- FX: `USDINR=X`
 - Benchmark Index: `^GSPC` (S&P 500)
 
 Data summary:
