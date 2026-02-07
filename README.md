@@ -173,8 +173,9 @@ The dashboard computes individual asset statistics used in the analytics panels.
 - Annual volatility: 27.57%  
 - Sharpe ratio: 0.53  
 - Max drawdown: -35.18%  
-- RSI status: Unknown (latest close not available in this snapshot)
-- <img width="1593" height="956" alt="image" src="https://github.com/user-attachments/assets/7f5941b0-964f-4ba9-b61f-862828c41652" />
+- RSI status: Unknown (latest close not available in this snapshot
+  <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/0bd1be78-066c-4f77-99fe-2f7fa9dee2b9" />
+
 
 
 **MSFT**
@@ -183,24 +184,24 @@ The dashboard computes individual asset statistics used in the analytics panels.
 - Sharpe ratio: 0.45  
 - Max drawdown: -40.61%  
 - RSI status: Unknown
-- <img width="1593" height="956" alt="image" src="https://github.com/user-attachments/assets/863f223c-9273-441a-af6e-6c9a5faf5881" />
-
+- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/92ad9706-0fcd-465a-8028-a72465dd4751" />
 
 **GOOGL**
 - Annual return: 23.45%  
 - Annual volatility: 30.73%  
 - Sharpe ratio: 0.76  
 - Max drawdown: -47.95%  
-- RSI status: Unknown  
-<img width="1593" height="956" alt="image" src="https://github.com/user-attachments/assets/6cd30d80-a4ec-404f-8c9a-07ab230658f9" />
+- RSI status: Unknown
+- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/2a3e2d8a-7236-4bb9-88bd-8c76b205b2de" />
+
 
 **TSLA**
 - Annual return: 7.18%  
 - Annual volatility: 60.15%  
 - Sharpe ratio: 0.12  
 - Max drawdown: -79.88%  
-- RSI status: Unknown  
-<img width="1593" height="956" alt="image" src="https://github.com/user-attachments/assets/ffd44c3c-5a79-460c-b566-a75a2fb8c6f5" />
+- RSI status: Unknown
+- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/a036b1d6-c229-4c02-985f-de3988f408c8" />
 
 **GC=F (Gold)**
 - Current price: 4917.50  
@@ -209,8 +210,8 @@ The dashboard computes individual asset statistics used in the analytics panels.
 - Annual volatility: 17.24%  
 - Sharpe ratio: 1.16  
 - Max drawdown: -20.88%  
-- RSI status: Normal  
-<img width="1593" height="956" alt="image" src="https://github.com/user-attachments/assets/d97a9c18-6d6d-43df-8393-318c7be7de45" />
+- RSI status: Normal
+- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/0ed68f58-0ac3-4635-8742-897306d7393b" />
 
 **SI=F (Silver)**
 - Current price: 79.11  
@@ -219,8 +220,9 @@ The dashboard computes individual asset statistics used in the analytics panels.
 - Annual volatility: 36.94%  
 - Sharpe ratio: 0.58  
 - Max drawdown: -40.94%  
-- RSI status: Normal  
-<img width="1593" height="956" alt="image" src="https://github.com/user-attachments/assets/06231e2e-d834-43e1-a012-8444669b9a27" />
+- RSI status: Normal
+- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/d05a8b6d-6b2d-4cd4-8227-aface06c1e6d" />
+
 
 **USDINR=X**
 - Current price: 90.15  
@@ -229,8 +231,8 @@ The dashboard computes individual asset statistics used in the analytics panels.
 - Annual volatility: 4.57%  
 - Sharpe ratio: 0.90  
 - Max drawdown: -4.06%  
-- RSI status: Normal  
-<img width="1593" height="956" alt="image" src="https://github.com/user-attachments/assets/be5a9c57-0e2e-44b6-bc2f-8f6ac35d183e" />
+- RSI status: Normal
+- <img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/5955a5c0-62a8-4b91-a426-b995430f4ca0" />
 
 **EURUSD=X**
 - Current price: 1.18  
@@ -240,7 +242,7 @@ The dashboard computes individual asset statistics used in the analytics panels.
 - Sharpe ratio: -0.03  
 - Max drawdown: -21.98%  
 - RSI status: Normal  
-<img width="1593" height="956" alt="image" src="https://github.com/user-attachments/assets/28a70479-71ad-47ef-8bd7-8c62e1b70038" />
+<img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/712576d9-7845-44f7-b30b-d37f0be9d301" />
 
 **^GSPC (S&P 500)**
 - Annual return: 11.48%  
@@ -249,7 +251,7 @@ The dashboard computes individual asset statistics used in the analytics panels.
 - Max drawdown: -27.11%  
 - RSI status: Unknown  
 (Where current price or 20-day change is not available, the dashboard can hide the value or label it as “Not available in current snapshot”.)
-<img width="1593" height="956" alt="image" src="https://github.com/user-attachments/assets/07fc9d2d-04c6-4d62-9d1c-931ec029e9fe" />
+<img width="1592" height="956" alt="image" src="https://github.com/user-attachments/assets/964c2994-9b85-4557-be1c-78c745f88a13" />
 
 ## 11. Dashboard Overview
 The Streamlit dashboard (`dashboard/app.py`) provides an interactive interface including:
