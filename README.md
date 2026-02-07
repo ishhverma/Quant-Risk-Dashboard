@@ -248,7 +248,7 @@ The dashboard also exposes single-asset statistics, which can be used for both s
 - RSI status: Unknown  
 
 ## 11. Dashboard Overview
-The Streamlit app (e.g., `dashboard/app.py`) exposes an interactive dashboard for exploration and decision support. [github](https://github.com/shwetanaren/streamlit-financial-dashboard)
+The Streamlit app (e.g., `dashboard/app.py`) exposes an interactive dashboard for exploration and decision support. 
 Key views:
 - Market overview summary (headline stats, current regimes, and risk snapshot).  
 - Normalized price comparison across assets to visualize relative performance.  
@@ -259,6 +259,7 @@ Key views:
 - VaR / CVaR and tail-risk visualizations.  
 - Asset rankings and performance tables.  
 - RSI and return-distribution plots for microstructure and overbought/oversold context.
+<img width="1365" height="2171" alt="image" src="https://github.com/user-attachments/assets/6bad9516-0c10-40fb-a411-4b52efae8b85" />
 
 ## 13. Tech Stack
 Core stack:
