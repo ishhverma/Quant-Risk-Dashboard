@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBG PRO · QUANT RISK DASHBOARD</title>
+    
+    <!-- Font Awesome 6 Pro (Free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Google Fonts: IBM Plex Mono + Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <style>
+        /* BLOOMBERG TERMINAL THEME – PROFESSIONAL, DARK, HIGH-DENSITY */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0c10;
+            background-image: radial-gradient(circle at 20% 30%, rgba(0, 150, 255, 0.02) 0%, transparent 30%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #e0e6f0;
+            line-height: 1.5;
+            padding: 20px;
+            font-size: 13px;
+        }
+
+        .dashboard {
+            max-width: 1920px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* TERMINAL TOP BAR – AUTHENTIC BLOOMBERG FEEL */
+        .terminal-top {
+            background: #000000;
+            border-bottom: 2px solid #1e3a5f;
+            padding: 8px 16px;
+            margin: -20px -20px 0 -20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #8bb3e0;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            border-bottom: 1px solid #1e4976;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .terminal-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bbg-logo {
+            background: #0a6eb4;
+            color: black;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 2px;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .bbg-ticker {
+            color: #69c0ff;
+            background: #0e1e2b;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            border: 0.5px solid #2e5a7a;
+        }
+
+        .terminal-status {
+            display: flex;
+            gap: 24px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-led {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b98180;
+        }
+
+        /* MAIN GRID – BLOOMBERG HIGH-DENSITY LAYOUT */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1.6fr 0.9fr;
+            gap: 16px;
+        }
+
+        .grid-3col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .grid-4col {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        /* TERMINAL CARDS – DARK, GLASS, BORDER DETAIL */
+        .card {
+            background: #0e1217;
+            background: linear-gradient(145deg, #0f1419 0%, #0a0e12 100%);
+            border: 1px solid #202a33;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 8px 16px -6px rgba(0,0,0,0.6);
+            position: relative;
+            transition: border 0.15s ease;
+        }
+
+        .card:hover {
+            border-color: #3a6ea5;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #1f2c36;
+            color: #9ab8d9;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title i {
+            color: #3b82f6;
+            font-size: 14px;
+        }
+
+        /* BLOOMBERG STAT STYLE */
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .stat-label {
+            color: #7e96af;
+            font-weight: 400;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-family: 'IBM Plex Mono', monospace;
+            color: #e6edf5;
+        }
+
+        .positive {
+            color: #10c570;
+        }
+
+        .negative {
+            color: #f2645a;
+        }
+
+        .neutral {
+            color: #faca4e;
+        }
+
+        .blink {
+            animation: blink-animation 1.2s infinite;
+        }
+
+        @keyframes blink-animation {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* PROGRESS BARS – TERMINAL STYLE */
+        .progress-terminal {
+            width: 100%;
+            height: 6px;
+            background: #1c262f;
+            border-radius: 0;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #3b82f6;
+            border-radius: 0;
+        }
+
+        .progress-fill.crisis { background: #f2645a; }
+        .progress-fill.highvol { background: #faca4e; }
+        .progress-fill.lowvol { background: #3b82f6; }
+        .progress-fill.recovery { background: #10c570; }
+
+        /* REGIME TABS */
+        .regime-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+
+        .regime-tab {
+            flex: 1;
+            background: #0f1a22;
+            border: 1px solid #25323e;
+            padding: 12px 8px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .regime-tab.active {
+            background: #0e2a3b;
+            border-color: #3b82f6;
+            box-shadow: inset 0 -2px 0 #3b82f6;
+        }
+
+        /* ASSET TABLE – BLOOMBERG TICKER STYLE */
+        .bbg-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .bbg-table th {
+            text-align: left;
+            padding: 10px 6px;
+            color: #7e96af;
+            font-weight: 500;
+            border-bottom: 1px solid #1f2c36;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .bbg-table td {
+            padding: 10px 6px;
+            border-bottom: 0.5px solid #1a242e;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .bbg-table tr:hover td {
+            background: #121c24;
+        }
+
+        .ticker-symbol {
+            font-weight: 600;
+            color: #b0d4f0;
+        }
+
+        /* MINI CHARTS */
+        .mini-chart-container {
+            height: 80px;
+            margin-top: 12px;
+        }
+
+        /* FRAGILITY METER – TERMINAL STYLE */
+        .fragility-scale {
+            background: linear-gradient(90deg, #10c570, #faca4e, #f2645a);
+            height: 8px;
+            width: 100%;
+            margin: 16px 0 8px;
+            position: relative;
+        }
+
+        .fragility-marker {
+            width: 14px;
+            height: 14px;
+            background: white;
+            border: 2px solid black;
+            position: absolute;
+            top: -3px;
+            left: 36%;
+            border-radius: 0;
+            transform: rotate(45deg);
+        }
+
+        /* DIVIDER */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, #1a2a36, #3a5a7a, #1a2a36);
+            margin: 16px 0;
+        }
+
+        /* FOOTER COMMAND LINE */
+        .command-line {
+            background: #030608;
+            border-top: 1px solid #1e3f5a;
+            padding: 12px 20px;
+            margin-top: 20px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: #98c1e0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .cursor-blink {
+            background: #98c1e0;
+            width: 8px;
+            height: 16px;
+            display: inline-block;
+            animation: blink 1s step-end infinite;
+        }
+
+        /* TOOLBAR */
+        .toolbar {
+            display: flex;
+            gap: 16px;
+            padding: 8px 0;
+            color: #7e96af;
+            font-size: 11px;
+        }
+
+        /* ADAPTIVE */
+        @media (max-width: 1400px) {
+            .grid-2col { grid-template-columns: 1fr; }
+            .grid-4col { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- BLOOMBERG TERMINAL HEADER -->
+<div class="terminal-top">
+    <div class="terminal-logo">
+        <span class="bbg-logo"><i class="fas fa-terminal"></i> BBG PRO</span>
+        <span class="bbg-ticker"><i class="fas fa-chart-line"></i> QUANT RISK v2.4.1</span>
+        <span style="color: #69c0ff; margin-left: 12px;">MULTI-ASSET · REGIME-AWARE</span>
+    </div>
+    <div class="terminal-status">
+        <div class="status-item"><span class="status-led"></span> LIVE</div>
+        <div class="status-item"><i class="far fa-clock"></i> 2026-02-12 14:30:17</div>
+        <div class="status-item"><i class="fas fa-database"></i> 1,301 D</div>
+        <div class="status-item"><i class="fas fa-shield-alt"></i> DQ: 100.0</div>
+    </div>
+</div>
+
+<!-- MAIN DASHBOARD -->
+<div class="dashboard">
+
+    <!-- ROW 1: KEY MONITORS (BLOOMBERG 'TOP') -->
+    <div class="grid-4col">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-chart-pie"></i> PORTFOLIO</span>
+                <span style="color:#7e96af;">AUM</span>
+            </div>
+            <div style="font-size: 32px; font-weight: 700; font-family: 'IBM Plex Mono';">$145,122</div>
+            <div style="display: flex; gap: 16px; margin-top: 12px;">
+                <span><span style="color:#7e96af;">Init</span> 100,000</span>
+                <span class="positive"><i class="fas fa-arrow-up"></i> +45.12%</span>
+            </div>
+            <div class="progress-terminal" style="margin-top: 16px;">
+                <div class="progress-fill" style="width: 100%; background: #3b82f6;"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-gauge-high"></i> RISK METRICS</span>
+                <span>SHARPE</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span style="font-size: 32px; font-weight: 700; font-family: monospace;">0.674</span>
+                <span style="color:#7e96af;">Sortino 0.640</span>
+            </div>
+            <div style="margin-top: 12px;">
+                <div class="stat-row"><span class="stat-label">CALMAR</span><span class="stat-value">0.641</span></div>
+                <div class="stat-row"><span class="stat-label">MAX DD</span><span class="stat-value negative">-11.79%</span></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-triangle-exclamation"></i> TAIL RISK</span>
+                <span>VaR 95%</span>
+            </div>
+            <div style="display: flex; gap: 16px; align-items: baseline;">
+                <span style="font-size: 28px; font-weight: 700; font-family: monospace; color: #f2645a;">-0.84%</span>
+                <span style="color: #7e96af;">CVaR -1.37%</span>
+            </div>
+            <div class="stat-row" style="margin-top: 12px;"><span class="stat-label">KURTOSIS</span><span class="stat-value">14.27</span></div>
+            <div class="stat-row"><span class="stat-label">SKEW</span><span class="stat-value">-0.0875</span></div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-microchip"></i> FRAGILITY</span>
+                <span>INDEX</span>
+            </div>
+            <div style="font-size: 32px; font-weight: 700; font-family: monospace;">3.623</div>
+            <div class="fragility-scale" style="margin-top: 16px;">
+                <div class="fragility-marker" style="left: 36%;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 8px; color:#7e96af;">
+                <span>ROBUST</span>
+                <span>MODERATE</span>
+                <span>FRAGILE</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 2: REGIME DETECTION + ATTRIBUTION (BLOOMBERG SPLIT) -->
+    <div class="grid-2col">
+        <!-- LEFT: REGIME INTELLIGENCE -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-rainbow"></i> MARKET REGIME DETECTION</span>
+                <span style="background: #0e2a3b; padding: 4px 12px; border-radius: 20px;">HMM · 4 STATES</span>
+            </div>
+            <!-- Regime Tabs -->
+            <div class="regime-tabs">
+                <div class="regime-tab active"><span style="color:#f2645a;">●</span> CRISIS</div>
+                <div class="regime-tab"><span style="color:#faca4e;">●</span> HIGH VOL</div>
+                <div class="regime-tab"><span style="color:#3b82f6;">●</span> LOW VOL</div>
+                <div class="regime-tab"><span style="color:#10c570;">●</span> RECOVERY</div>
+            </div>
+            <!-- Transition Matrix -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <div class="stat-row"><span class="stat-label">Crisis → Crisis</span><span class="stat-value" style="color:#f2645a;">91.35%</span></div>
+                    <div class="progress-terminal"><div class="progress-fill crisis" style="width:91%"></div></div>
+                    <div class="stat-row" style="margin-top: 12px;"><span class="stat-label">High Vol → Crisis</span><span class="stat-value" style="color:#faca4e;">83.33%</span></div>
+                    <div class="progress-terminal"><div class="progress-fill highvol" style="width:83%"></div></div>
+                    <div class="stat-row" style="margin-top: 12px;"><span class="stat-label">Low Vol → Low Vol</span><span class="stat-value" style="color:#3b82f6;">94.12%</span></div>
+                    <div class="progress-terminal"><div class="progress-fill lowvol" style="width:94%"></div></div>
+                    <div class="stat-row" style="margin-top: 12px;"><span class="stat-label">Recovery → Low Vol</span><span class="stat-value" style="color:#10c570;">85.18%</span></div>
+                    <div class="progress-terminal"><div class="progress-fill recovery" style="width:85%"></div></div>
+                </div>
+                <div>
+                    <div style="background: #0f1a22; padding: 16px; border-left: 3px solid #3b82f6;">
+                        <span style="color:#9ab8d9;">REGIME RETURNS (ANN.)</span>
+                        <div style="margin-top: 12px;">
+                            <div class="stat-row"><span class="stat-label">Crisis</span><span class="stat-value negative">-3.56%</span></div>
+                            <div class="stat-row"><span class="stat-label">High Vol</span><span class="stat-value neutral">+11.59%</span></div>
+                            <div class="stat-row"><span class="stat-label">Low Vol</span><span class="stat-value positive">+26.27%</span></div>
+                            <div class="stat-row"><span class="stat-label">Recovery</span><span class="stat-value positive">→ Low Vol</span></div>
+                        </div>
+                    </div>
+                    <!-- Doughnut Chart -->
+                    <div style="height: 140px; margin-top: 16px;">
+                        <canvas id="regimeDonut"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: ATTRIBUTION & FACTOR -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-chart-simple"></i> ATTRIBUTION & EXPOSURE</span>
+                <span>PnL DECOMP</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <!-- Attribution Bars -->
+                <div>
+                    <span style="color:#9ab8d9; font-size: 11px;">NORMALIZED PnL BY ASSET</span>
+                    <div style="margin-top: 12px;">
+                        <div class="stat-row"><span class="stat-label">GOOGL</span><span class="stat-value positive">+0.84</span> <span style="margin-left: auto; width: 84%; background:#10c570; height: 6px;"></span></div>
+                        <div style="background:#1c262f; width:100%; height:6px; margin-bottom: 8px;"><div style="width:84%; height:6px; background:#10c570;"></div></div>
+                        <div class="stat-row"><span class="stat-label">MSFT</span><span class="stat-value positive">+0.62</span></div>
+                        <div style="background:#1c262f; width:100%; height:6px; margin-bottom: 8px;"><div style="width:62%; height:6px; background:#10c570;"></div></div>
+                        <div class="stat-row"><span class="stat-label">^GSPC</span><span class="stat-value positive">+0.37</span></div>
+                        <div style="background:#1c262f; width:100%; height:6px; margin-bottom: 8px;"><div style="width:37%; height:6px; background:#10c570;"></div></div>
+                        <div class="stat-row"><span class="stat-label">AAPL</span><span class="stat-value positive">+0.32</span></div>
+                        <div style="background:#1c262f; width:100%; height:6px; margin-bottom: 8px;"><div style="width:32%; height:6px; background:#10c570;"></div></div>
+                        <div class="stat-row"><span class="stat-label">TSLA</span><span class="stat-value negative">-0.17</span></div>
+                        <div style="background:#1c262f; width:100%; height:6px; margin-bottom: 8px;"><div style="width:17%; height:6px; background:#f2645a;"></div></div>
+                    </div>
+                </div>
+                <!-- Factor Exposures -->
+                <div>
+                    <span style="color:#9ab8d9; font-size: 11px;">FACTOR (vs SPX)</span>
+                    <div style="background: #0e1a22; padding: 16px; margin-top: 12px;">
+                        <div class="stat-row"><span class="stat-label">ALPHA</span><span class="stat-value" style="color:#3b82f6;">0.0003</span></div>
+                        <div class="stat-row"><span class="stat-label">BETA</span><span class="stat-value" style="color:#a78bfa;">0.7964</span></div>
+                        <div class="stat-row"><span class="stat-label">R-SQUARED</span><span class="stat-value">0.6981</span></div>
+                        <div class="divider" style="margin:12px 0;"></div>
+                        <div class="stat-row"><span class="stat-label">VOL HARVEST α</span><span class="stat-value" style="color:#7e96af;">NaN</span></div>
+                    </div>
+                    <!-- Drawdown snapshot -->
+                    <div style="margin-top: 16px;">
+                        <span style="color:#9ab8d9;"><i class="fas fa-chart-line"></i> DRAWDOWN EPISODES</span>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <div style="background:#0f1a22; padding: 10px; flex:1;">
+                                <span style="color:#7e96af;">COUNT</span>
+                                <div style="font-size: 20px; font-weight: 700;">39</div>
+                            </div>
+                            <div style="background:#0f1a22; padding: 10px; flex:1;">
+                                <span style="color:#7e96af;">WORST</span>
+                                <div style="font-size: 20px; font-weight: 700; color:#f2645a;">-11.8%</div>
+                            </div>
+                            <div style="background:#0f1a22; padding: 10px; flex:1;">
+                                <span style="color:#7e96af;">AVG DUR</span>
+                                <div style="font-size: 20px; font-weight: 700;">30.2d</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 3: ASSET UNIVERSE TABLE (BLOOMBERG TICKER FEATURE) -->
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title"><i class="fas fa-table"></i> MULTI-ASSET UNIVERSE · REAL-TIME STATISTICS</span>
+            <span style="display: flex; gap: 20px;">
+                <span><i class="fas fa-circle" style="color:#10c570; font-size: 8px;"></i> 9 INSTRUMENTS</span>
+                <span><i class="fas fa-arrows-rotate"></i> DAILY REBAL</span>
+            </span>
+        </div>
+        <table class="bbg-table">
+            <thead>
+                <tr>
+                    <th>Ticker</th>
+                    <th>Last</th>
+                    <th>20D Δ</th>
+                    <th>Ann Ret</th>
+                    <th>Ann Vol</th>
+                    <th>Sharpe</th>
+                    <th>Max DD</th>
+                    <th>RSI</th>
+                    <th>Regime</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="ticker-symbol"><i class="fas fa-building"></i> AAPL</td><td>182.34</td><td class="positive">+4.2%</td><td class="positive">14.66%</td><td>27.57%</td><td>0.53</td><td class="negative">-35.18%</td><td>54.2</td><td><span style="color:#faca4e;">High Vol</span></td></tr>
+                <tr><td class="ticker-symbol"><i class="fas fa-building"></i> MSFT</td><td>412.56</td><td class="positive">+3.8%</td><td class="positive">11.61%</td><td>26.06%</td><td>0.45</td><td class="negative">-40.61%</td><td>48.7</td><td><span style="color:#faca4e;">High Vol</span></td></tr>
+                <tr><td class="ticker-symbol"><i class="fas fa-building"></i> GOOGL</td><td>165.23</td><td class="positive">+6.1%</td><td class="positive">23.45%</td><td>30.73%</td><td>0.76</td><td class="negative">-47.95%</td><td>62.3</td><td><span style="color:#3b82f6;">Low Vol</span></td></tr>
+                <tr><td class="ticker-symbol"><i class="fas fa-car"></i> TSLA</td><td>202.11</td><td class="negative">-2.5%</td><td class="positive">7.18%</td><td>60.15%</td><td>0.12</td><td class="negative">-79.88%</td><td>38.1</td><td><span style="color:#f2645a;">Crisis</span></td></tr>
+                <tr><td class="ticker-symbol"><i class="fas fa-coins"></i> GC=F (GOLD)</td><td>4917.50</td><td class="positive">+10.52%</td><td class="positive">20.03%</td><td>17.24%</td><td>1.16</td><td class="negative">-20.88%</td><td>58.9</td><td><span style="color:#10c570;">Recovery</span></td></tr>
+                <tr><td class="ticker-symbol"><i class="fas fa-dollar-sign"></i> USDINR=X</td><td>90.15</td><td class="positive">+0.32%</td><td class="positive">4.11%</td><td>4.57%</td><td>0.90</td><td class="negative">-4.06%</td><td>51.2</td><td><span style="color:#10c570;">Low Vol</span></td></tr>
+                <tr><td class="ticker-symbol"><i class="fas fa-chart-simple"></i> ^GSPC</td><td>5342.80</td><td class="positive">+2.1%</td><td class="positive">11.48%</td><td>16.86%</td><td>0.68</td><td class="negative">-27.11%</td><td>55.0</td><td><span style="color:#3b82f6;">Low Vol</span></td></tr>
+                <tr><td class="ticker-symbol"><i class="fas fa-coins"></i> SI=F (SILVER)</td><td>29.84</td><td class="positive">+5.3%</td><td class="positive">8.90%</td><td>22.10%</td><td>0.40</td><td class="negative">-31.20%</td><td>52.4</td><td><span style="color:#faca4e;">High Vol</span></td></tr>
+                <tr><td class="ticker-symbol"><i class="fas fa-euro-sign"></i> EURUSD=X</td><td>1.0921</td><td class="negative">-0.7%</td><td class="negative">-1.20%</td><td>6.80%</td><td>-0.18</td><td class="negative">-8.50%</td><td>44.7</td><td><span style="color:#f2645a;">Crisis</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ROW 4: FEATURE ENGINEERING + DATA QUALITY + DRAWDOWN INTELLIGENCE -->
+    <div class="grid-3col">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-microchip"></i> FEATURE ENGINEERING</span>
+                <span>180 FACTORS</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                <span style="background:#1e2a33; padding: 4px 12px; border-radius: 2px; font-size: 11px;">Log Returns</span>
+                <span style="background:#1e2a33; padding: 4px 12px; border-radius: 2px; font-size: 11px;">Rolling Vol</span>
+                <span style="background:#1e2a33; padding: 4px 12px; border-radius: 2px; font-size: 11px;">Vol-of-Vol</span>
+                <span style="background:#1e2a33; padding: 4px 12px; border-radius: 2px; font-size: 11px;">RSI</span>
+                <span style="background:#1e2a33; padding: 4px 12px; border-radius: 2px; font-size: 11px;">MACD</span>
+                <span style="background:#1e2a33; padding: 4px 12px; border-radius: 2px; font-size: 11px;">Skew</span>
+                <span style="background:#1e2a33; padding: 4px 12px; border-radius: 2px; font-size: 11px;">Kurtosis</span>
+                <span style="background:#1e2a33; padding: 4px 12px; border-radius: 2px; font-size: 11px;">Drawdown</span>
+            </div>
+            <div class="stat-row"><span class="stat-label">Feature Matrix</span><span class="stat-value">(1301, 180)</span></div>
+            <div class="stat-row"><span class="stat-label">Indicators/Ticker</span><span class="stat-value">19</span></div>
+            <div class="stat-row"><span class="stat-label">Feature Families</span><span class="stat-value">7</span></div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-shield"></i> DATA QUALITY</span>
+                <span style="color:#10c570;">SCORE 100.0</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <div class="stat-row"><span class="stat-label">Missing</span><span class="stat-value">0.0%</span></div>
+                    <div class="stat-row"><span class="stat-label">Outliers</span><span class="stat-value">0</span></div>
+                    <div class="stat-row"><span class="stat-label">Spikes</span><span class="stat-value">0</span></div>
+                </div>
+                <div>
+                    <div class="stat-row"><span class="stat-label">Last Data</span><span class="stat-value">2026-02-05</span></div>
+                    <div class="stat-row"><span class="stat-label">Lag</span><span class="stat-value">0d</span></div>
+                    <div class="stat-row"><span class="stat-label">Fresh</span><span class="stat-value">✓</span></div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <span style="color:#9ab8d9;">VALIDATION: NO LOOKAHEAD</span>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-water"></i> DRAWDOWN INTELLIGENCE</span>
+                <span>39 EPISODES</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div>
+                    <span style="color:#7e96af;">CURRENT DRAWDOWN</span>
+                    <div style="font-size: 28px; font-weight: 700; color: #faca4e;">-3.27%</div>
+                </div>
+                <div class="stat-row"><span class="stat-label">Avg Depth</span><span class="stat-value">-1.45%</span></div>
+                <div class="stat-row"><span class="stat-label">Avg Duration</span><span class="stat-value">30.2 days</span></div>
+                <div class="stat-row"><span class="stat-label">Worst Episode</span><span class="stat-value negative">-11.79% (27d)</span></div>
+                <div class="progress-terminal"><div class="progress-fill" style="width: 38%; background: #faca4e;"></div></div>
+                <span style="color:#9ab8d9; font-size: 11px;">RECOVERY: MEAN-REVERTING</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 5: PERFORMANCE CHARTS & ROLLING METRICS -->
+    <div class="grid-2col">
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-chart-scatter"></i> RISK-RETURN FRONTIER</span>
+                <span>ASSET SCATTER</span>
+            </div>
+            <div style="height: 200px; position: relative;">
+                <canvas id="scatterChart"></canvas>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title"><i class="fas fa-chart-line"></i> ROLLING SHARPE (6M)</span>
+                <span>VOLATILITY ADJ.</span>
+            </div>
+            <div style="height: 200px;">
+                <canvas id="rollingSharpe"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- BLOOMBERG COMMAND LINE -->
+    <div class="command-line">
+        <span><i class="fas fa-chevron-right"></i> DASH<SPAN class="blink">█</span></span>
+        <span style="color: #7e96af;">PORTFOLIO RISK: VAR 95% -0.84% | CVAR -1.37% | BETA 0.796 | R2 0.698</span>
+        <span style="margin-left: auto;"><i class="far fa-save"></i> SNAPSHOT 2026-02-12</span>
+    </div>
+</div>
+
+<script>
+    // CHART.JS – BLOOMBERG STYLE VISUALIZATIONS
+    document.addEventListener('DOMContentLoaded', function() {
+        // Regime Donut
+        const donutCtx = document.getElementById('regimeDonut').getContext('2d');
+        new Chart(donutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Crisis', 'High Vol', 'Low Vol', 'Recovery'],
+                datasets: [{
+                    data: [91.35, 83.33, 94.12, 85.18],
+                    backgroundColor: ['#f2645a', '#faca4e', '#3b82f6', '#10c570'],
+                    borderWidth: 0,
+                    borderRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Scatter Plot (Risk-Return)
+        const scatterCtx = document.getElementById('scatterChart').getContext('2d');
+        new Chart(scatterCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Assets',
+                    data: [
+                        { x: 27.57, y: 14.66 }, // AAPL
+                        { x: 26.06, y: 11.61 }, // MSFT
+                        { x: 30.73, y: 23.45 }, // GOOGL
+                        { x: 60.15, y: 7.18 },  // TSLA
+                        { x: 17.24, y: 20.03 }, // GOLD
+                        { x: 4.57, y: 4.11 },   // USDINR
+                        { x: 16.86, y: 11.48 } // SPX
+                    ],
+                    backgroundColor: ['#3b82f6', '#3b82f6', '#10c570', '#f2645a', '#faca4e', '#a78bfa', '#3b82f6'],
+                    pointRadius: 6,
+                    pointHoverRadius: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { grid: { color: '#1f2c36' }, title: { display: true, text: 'Volatility %', color: '#7e96af' } },
+                    y: { grid: { color: '#1f2c36' }, title: { display: true, text: 'Return %', color: '#7e96af' } }
+                },
+                plugins: { tooltip: { backgroundColor: '#0a0e12' } }
+            }
+        });
+
+        // Rolling Sharpe (simulated)
+        const rollCtx = document.getElementById('rollingSharpe').getContext('2d');
+        new Chart(rollCtx, {
+            type: 'line',
+            data: {
+                labels: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
+                datasets: [{
+                    label: 'Rolling Sharpe',
+                    data: [0.62, 0.58, 0.71, 0.67, 0.73, 0.68, 0.674],
+                    borderColor: '#3b82f6',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#a0c8f0',
+                    fill: false,
+                    tension: 0.2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { x: { grid: { color: '#1f2c36' } }, y: { grid: { color: '#1f2c36' } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    });
+</script>
+
+<!-- FOOTER DETAIL -->
+<div style="display: flex; justify-content: space-between; padding: 16px 0; color: #4b6a86; font-size: 10px; border-top: 1px solid #1b2a35; margin-top: 8px;">
+    <div>QUANT-RISK-DASHBOARD · MULTI-ASSET REGIME-AWARE RISK SYSTEM · BLOOMBERG TERMINAL THEME</div>
+    <div><i class="far fa-copyright"></i> DATA: 2021-02-08 → 2026-02-05 | YFINANCE | 1301 OBS | DAILY</div>
+    <div>v2.4.1 · FRAGILITY 3.623</div>
+</div>
+
+</body>
+</html>
